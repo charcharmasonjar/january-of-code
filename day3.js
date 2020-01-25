@@ -57,5 +57,19 @@ const findShortest = function(intersections) {
   return Math.min(...result);
 }
 
-let intersections = getIntersections(getCoords(path1), getCoords(path2));
-console.log(findShortest(intersections))
+// let intersections = getIntersections(getCoords(path1), getCoords(path2));
+// console.log(findShortest(intersections))
+
+// part 2
+const findFirstIntersection = function(coords1, coords2) {
+    // start from index 1 to avoid [0, 0]
+    for (let i = 1; i < coords1.length; i ++) {
+      for (let j = 1; j < coords2.length; j ++) {
+        if (coords1[i][0] === coords2[j][0] && coords1[i][1] === coords2[j][1]) {
+          return i + j;
+        }
+      }
+    }
+}
+
+console.log(findFirstIntersection(getCoords(path1), getCoords(path2)));
