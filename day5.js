@@ -66,27 +66,9 @@ const intcode = function(arr) {
     let mode2 = getMode2(arr[i]);
     let mode3 = getMode3(arr[i]);
 
-    let param1;
-    let param2;
-    let loc;
-
-    if (mode1) {
-      param1 = arr[i + 1];
-    } else {
-      param1 = arr[arr[i + 1]];
-    }
-
-    if (mode2) {
-      param2 = arr[i + 2];
-    } else {
-      param2 = arr[arr[i + 2]];
-    }
-
-    if (mode3) {
-      loc = i + 3;
-    } else {
-      loc = arr[i + 3];
-    }
+    let param1 = mode1 ? arr[i + 1] : arr[arr[i + 1]]
+    let param2 = mode2 ? arr[i + 2] : arr[arr[i + 2]]
+    let loc = mode3 ? i + 3 : arr[i + 3]
 
     if (opcode === 1) {
       arr[loc] = param1 + param2;
