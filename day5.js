@@ -48,12 +48,8 @@ const getMode3 = function(inst) {
   return 1;
 };
 
-// if mode is position - use index of the index
-// if mode is immediate - use just the index
-
-// part 1
-// i can't believe this worked
-const intcode = function(arr) {
+// part 1 and 2
+const intcode = function(arr, input) {
   let i = 0;
   while (i < arr.length) {
     let opcode = getOpcode(arr[i]);
@@ -61,14 +57,13 @@ const intcode = function(arr) {
     if (opcode === 99) {
       return arr;
     }
-
     let mode1 = getMode1(arr[i]);
     let mode2 = getMode2(arr[i]);
     let mode3 = getMode3(arr[i]);
 
-    let param1 = mode1 ? arr[i + 1] : arr[arr[i + 1]]
-    let param2 = mode2 ? arr[i + 2] : arr[arr[i + 2]]
-    let loc = mode3 ? i + 3 : arr[i + 3]
+    let param1 = mode1 ? arr[i + 1] : arr[arr[i + 1]];
+    let param2 = mode2 ? arr[i + 2] : arr[arr[i + 2]];
+    let loc = mode3 ? i + 3 : arr[i + 3];
 
     if (opcode === 1) {
       arr[loc] = param1 + param2;
@@ -77,19 +72,53 @@ const intcode = function(arr) {
       arr[loc] = param1 * param2;
       i += 4;
     } else if (opcode === 3) {
-      arr[loc] = param1;
+      
+      arr[arr[i + 1]] = input;
       i += 2;
     } else if (opcode === 4) {
-      arr[0] = param1;
+      console.log(param1)
       i += 2;
+    } else if (opcode === 5) {
+      // jump-if-true
+      // if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter.
+      // Otherwise, it does nothing.
+      if (param1 != 0) {
+        i = param2;
+      } else {
+        i += 3;
+      }
+    } else if (opcode === 6) {
+      // jump-if-false
+      // if the first parameter is zero, it sets the instruction pointer to the value from the second parameter.
+      // Otherwise, it does nothing.
+      if (param1 == 0) {
+        i = param2;
+      } else {
+        i += 3;
+      }
+    } else if (opcode === 7) {
+      // less than
+      // if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter.
+      // Otherwise, it stores 0
+      if (param1 < param2) {
+        arr[loc] = 1;
+      } else {
+        arr[loc] = 0;
+      }
+      i += 4;
+    } else if (opcode === 8) {
+      // is equals
+      // if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter.
+      // Otherwise, it stores 0
+      if (param1 == param2) {
+        arr[loc] = 1;
+      } else {
+        arr[loc] = 0;
+      }
+      i += 4;
     }
   }
   return arr;
 };
 
-
-data[1] = 1;
-
-
-let result = intcode(data);
-console.log(result[0]);
+intcode(data, 5);
