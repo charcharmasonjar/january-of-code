@@ -131,27 +131,35 @@ const getPermutations = function(input) {
 };
 
 const perms = getPermutations([0, 1, 2, 3, 4]);
-const getThrust = function(data, perms) {
-  let result = 0;
-  for (const perm of perms) {
+
+const getThrust = function(data, perm) {
+  return new Promise(resolve => {
     intcode([...data], perm[0], 0).then(res => {
       intcode([...data], perm[1], res).then(res => {
         intcode([...data], perm[2], res).then(res => {
           intcode([...data], perm[3], res).then(res => {
             intcode([...data], perm[4], res).then(res => {
-              if (res > result) {
-                result = res;
-                // i can't get the stupid thing to return
-                // so the answer is the last item printed to the console
-                // sue me
-                console.log(result);
-              }
+              resolve(res)
             });
           });
         });
       });
     });
-  }
-};
+  })
 
-getThrust(data, perms);
+}
+
+const getHighest = function(data, perms) {
+  let result = 0;
+  for (const perm of perms) {
+    getThrust(data, perm).then(res => {
+      if (res > result) {
+        result = res;
+        console.log(res)
+      }
+    })
+  }
+}
+
+getHighest(data, perms);
+
